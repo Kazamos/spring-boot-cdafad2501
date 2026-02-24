@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
@@ -38,6 +39,13 @@ public class CategoryService {
     }
 
     //méthode qui retourne la liste de toutes les categories
+    public Iterable<Category> getAllCategories() throws Exception {
+        //Test si la list est vide
+        if (categoryRepository.count() == 0) {
+            throw new Exception("La liste des categories est vide");
+        }
+        return categoryRepository.findAll();
+    }
 
     //méthode pour retourner une category par son name
     private boolean isCategoryExistsByName(String name) throws Exception {
