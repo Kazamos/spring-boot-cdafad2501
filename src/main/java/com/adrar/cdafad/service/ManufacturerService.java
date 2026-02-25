@@ -1,6 +1,8 @@
 package com.adrar.cdafad.service;
 
 import com.adrar.cdafad.entity.Manufacturer;
+import com.adrar.cdafad.exception.ManufacturerEmpty;
+import com.adrar.cdafad.exception.ManufacturerNotFound;
 import com.adrar.cdafad.repository.ManufacturerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,13 +27,15 @@ public class ManufacturerService {
     }
 
     public Optional<Manufacturer> getManufacturerById(Integer id) {
-        if (id == null) {
-            throw new IllegalArgumentException("L'ID ne peut pas être nul.");
-        }
-        return manufacturerRepository.findById(id);
+        return Optional.of(manufacturerRepository.findById(id)
+                .orElseThrow(() -> new ManufacturerNotFound(id)));
     }
 
     public Iterable<Manufacturer> getAllManufacturers() {
-        return manufacturerRepository.findAll();
+        Iterable<Manufacturer> list = manufacturerRepository.findAll();
+        if (!list.iterator().hasNext()) {
+            throw new ManufacturerEmpty();
+        }
+        return list;
     }
 }
